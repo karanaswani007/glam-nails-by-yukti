@@ -158,8 +158,19 @@ export function SiteFooter({ shell }: { shell: Shell }) {
           </div>
         </div>
       </div>
-      <p className="border-t border-rose/40 px-5 py-4 text-center text-xs text-blush">
-        © {new Date().getFullYear()} Glam Nails by Yukti. Payment is never marked paid automatically.
+      <p className="flex flex-col items-center gap-1 border-t border-rose/40 px-5 py-4 text-center text-xs text-blush">
+        <span>© {new Date().getFullYear()} Glam Nails by Yukti. Payment is never marked paid automatically.</span>
+        <span>
+          Developed by{" "}
+          <a
+            href="https://hksofttech.vercel.app"
+            target="_blank"
+            rel="noreferrer"
+            className="underline underline-offset-2 hover:text-ivory"
+          >
+            HK SoftTech
+          </a>
+        </span>
       </p>
     </footer>
   );

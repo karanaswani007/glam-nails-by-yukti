@@ -14,7 +14,7 @@ import {
   Store,
   X,
 } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { studioBootstrap } from "@/lib/server/store";
 import {
@@ -828,25 +828,20 @@ function SettingsPanel({
   }) => Promise<boolean>;
 }) {
   const settings = data.settings;
+  const [faqs, setFaqs] = useState(settings.faqs);
+
+  useEffect(() => {
+    setFaqs(settings.faqs);
+  }, [settings.faqs]);
+
   function submitSettings(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    let faqs: { q: string; a: string }[];
-    try {
-      const parsed: unknown = JSON.parse(String(form.get("faqs") ?? "[]"));
-      const isFaq = (value: unknown): value is { q: string; a: string } =>
-        typeof value === "object" &&
-        value !== null &&
-        "q" in value &&
-        typeof value.q === "string" &&
-        "a" in value &&
-        typeof value.a === "string";
-      if (!Array.isArray(parsed) || !parsed.every(isFaq)) {
-        throw new Error("FAQs must be an array of objects with question and answer text.");
-      }
-      faqs = parsed;
-    } catch (error) {
-      toast.error(error instanceof Error ? `Check the FAQ list: ${error.message}` : "Check the FAQ list.");
+    const faqEntries = faqs
+      .map(({ q, a }) => ({ q: q.trim(), a: a.trim() }))
+      .filter(({ q, a }) => q.length > 0 || a.length > 0);
+    if (faqEntries.some(({ q, a }) => q.length < 2 || a.length < 2)) {
+      toast.error("Add both a question and an answer, or remove the empty FAQ.");
       return;
     }
     const freeShippingValue = String(form.get("freeShippingRupees") ?? "");
@@ -875,7 +870,7 @@ function SettingsPanel({
       policyTerms: String(form.get("policyTerms") ?? ""),
       policyReturns: String(form.get("policyReturns") ?? ""),
       lowStock: Number(form.get("lowStock")),
-      faqs,
+      faqs: faqEntries,
     });
   }
   return (
@@ -925,13 +920,73 @@ function SettingsPanel({
             <TextField label="Privacy policy" name="policyPrivacy" defaultValue={settings.policyPrivacy} rows={3} />
             <TextField label="Terms" name="policyTerms" defaultValue={settings.policyTerms} rows={3} />
             <TextField label="Returns policy" name="policyReturns" defaultValue={settings.policyReturns} rows={3} />
-            <TextField
-              label="FAQs (JSON array of { q, a } objects)"
-              name="faqs"
-              defaultValue={JSON.stringify(settings.faqs, null, 2)}
-              rows={7}
-              className="md:col-span-2"
-            />
+          </div>
+        </div>
+        <div>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="font-serif text-3xl">Frequently asked questions</h2>
+              <p className="mt-1 text-sm text-muted">Add, edit or remove the questions shown on your home page.</p>
+            </div>
+            <p className="text-sm text-muted">{faqs.length} of 12</p>
+          </div>
+          <div className="mt-4 space-y-4">
+            {faqs.map((faq, index) => (
+              <fieldset key={index} className="grid gap-4 rounded-2xl border border-line p-4 md:grid-cols-2 md:p-5">
+                <legend className="px-2 text-sm font-medium">FAQ {index + 1}</legend>
+                <label className="block text-sm font-medium">
+                  Question
+                  <input
+                    className={`${fieldClass} mt-2`}
+                    name={`faq-question-${index}`}
+                    value={faq.q}
+                    maxLength={160}
+                    disabled={pending}
+                    onChange={(event) => {
+                      const q = event.currentTarget.value;
+                      setFaqs((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, q } : item));
+                    }}
+                  />
+                </label>
+                <label className="block text-sm font-medium">
+                  Answer
+                  <textarea
+                    className={`${fieldClass} mt-2`}
+                    name={`faq-answer-${index}`}
+                    value={faq.a}
+                    rows={3}
+                    maxLength={600}
+                    disabled={pending}
+                    onChange={(event) => {
+                      const a = event.currentTarget.value;
+                      setFaqs((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, a } : item));
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className={`${btnGhost} min-h-11 md:col-span-2 md:justify-self-start`}
+                  aria-label={`Remove FAQ ${index + 1}`}
+                  onClick={() => setFaqs((current) => current.filter((_, itemIndex) => itemIndex !== index))}
+                  disabled={pending}
+                >
+                  <X size={16} aria-hidden="true" /> Remove FAQ
+                </button>
+              </fieldset>
+            ))}
+            {faqs.length === 0 ? (
+              <p className="rounded-2xl border border-dashed border-line p-5 text-sm text-muted">
+                No FAQs yet. Add one to answer common customer questions.
+              </p>
+            ) : null}
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => setFaqs((current) => [...current, { q: "", a: "" }])}
+              disabled={pending || faqs.length >= 12}
+            >
+              <Plus size={16} aria-hidden="true" /> Add a question
+            </button>
           </div>
         </div>
         <button type="submit" className={btnPrimary} disabled={pending}>
