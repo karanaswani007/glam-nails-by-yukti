@@ -5,7 +5,6 @@ export type Result<T> = { ok: true; data: T } | { ok: false; error: string };
 export type Shell = {
   brandName: string;
   announcement: string;
-  showSampleNotice: boolean;
   whatsappNumber: string;
   whatsappDisplay: string;
   instagramUrl: string;

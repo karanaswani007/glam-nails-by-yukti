@@ -817,7 +817,7 @@ function SettingsPanel({
   data: StudioData;
   pending: boolean;
   onSave: (payload: {
-    brandName: string; announcement: string; showSampleNotice: boolean; heroHeading: string;
+    brandName: string; announcement: string; heroHeading: string;
     heroText: string; heroImage: string; aboutTitle: string; aboutBody: string;
     whatsappNumber: string; whatsappDisplay: string; instagramUrl: string; instagramHandle: string;
     location: string; salonAddress: string; shippingMode: "flat" | "confirm";
@@ -853,7 +853,6 @@ function SettingsPanel({
     void onSave({
       brandName: String(form.get("brandName") ?? ""),
       announcement: String(form.get("announcement") ?? ""),
-      showSampleNotice: form.has("showSampleNotice"),
       heroHeading: String(form.get("heroHeading") ?? ""),
       heroText: String(form.get("heroText") ?? ""),
       heroImage: String(form.get("heroImage") ?? ""),
@@ -893,7 +892,6 @@ function SettingsPanel({
             <TextField label="Hero introduction" name="heroText" defaultValue={settings.heroText} rows={3} className="md:col-span-2" />
             <Field label="About heading" name="aboutTitle" defaultValue={settings.aboutTitle} />
             <TextField label="About story" name="aboutBody" defaultValue={settings.aboutBody} rows={4} />
-            <CheckField name="showSampleNotice" label="Show sample-design notice" defaultChecked={settings.showSampleNotice} />
           </div>
         </div>
         <div>

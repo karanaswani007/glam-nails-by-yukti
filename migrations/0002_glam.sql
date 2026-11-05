@@ -288,7 +288,6 @@ on conflict (id) do nothing;
 insert into settings (key, value) values
 ('brand_name', 'Glam Nails by Yukti'),
 ('announcement', 'Handcrafted press-on nails from Bhusawal, delivered across India.'),
-('show_sample_notice', 'true'),
 ('hero_heading', 'Elegance at Your Fingertips.'),
 ('hero_text', 'Handcrafted press-on nails from Bhusawal, shaped for everyday wear, celebrations and bridal days, with delivery across India.'),
 ('hero_image', '/images/hero.jpg'),

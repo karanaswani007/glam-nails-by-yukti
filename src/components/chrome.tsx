@@ -29,11 +29,6 @@ export function SiteHeader({ shell }: { shell: Shell }) {
       <div className="bg-deep px-4 py-2 text-center text-xs tracking-widest text-ivory uppercase">
         {shell.announcement || "Handcrafted press-on nails, delivered across India."}
       </div>
-      {shell.showSampleNotice ? (
-        <p className="bg-blush px-4 py-2 text-center text-xs text-ink">
-          Designs marked Sample are starter pieces with illustrative prices. They are not a confirmed catalogue.
-        </p>
-      ) : null}
       <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 md:px-5">
         <button
           type="button"

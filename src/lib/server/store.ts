@@ -40,7 +40,6 @@ const PAGE_SIZE = 9;
 const DEFAULTS: Record<string, string> = {
   brand_name: "Glam Nails by Yukti",
   announcement: "Handcrafted press-on nails from Bhusawal, delivered across India.",
-  show_sample_notice: "true",
   hero_heading: "Elegance at Your Fingertips.",
   hero_text:
     "Handcrafted press-on nails from Bhusawal, shaped for everyday wear, celebrations and bridal days, with delivery across India.",
@@ -211,7 +210,6 @@ function toSettings(map: Record<string, string>): Settings {
   const shell: Shell = {
     brandName: map.brand_name || DEFAULTS.brand_name,
     announcement: map.announcement || "",
-    showSampleNotice: map.show_sample_notice !== "false",
     whatsappNumber: map.whatsapp_number || DEFAULTS.whatsapp_number,
     whatsappDisplay: map.whatsapp_display || DEFAULTS.whatsapp_display,
     instagramUrl: map.instagram_url || DEFAULTS.instagram_url,
@@ -660,7 +658,6 @@ export const getShell = createServerFn({ method: "GET" }).handler(async (): Prom
   return {
     brandName: current.brandName,
     announcement: current.announcement,
-    showSampleNotice: current.showSampleNotice,
     whatsappNumber: current.whatsappNumber,
     whatsappDisplay: current.whatsappDisplay,
     instagramUrl: current.instagramUrl,
@@ -1967,7 +1964,6 @@ export const studioSaveSettings = createServerFn({ method: "POST" })
         .object({
           brandName: z.string().trim().min(2).max(80),
           announcement: z.string().trim().max(180),
-          showSampleNotice: z.boolean(),
           heroHeading: z.string().trim().min(2).max(120),
           heroText: z.string().trim().max(400),
           heroImage: z.string().max(500000),
@@ -1999,7 +1995,6 @@ export const studioSaveSettings = createServerFn({ method: "POST" })
       const pairs: [string, string][] = [
         ["brand_name", input.brandName],
         ["announcement", input.announcement],
-        ["show_sample_notice", input.showSampleNotice ? "true" : "false"],
         ["hero_heading", input.heroHeading],
         ["hero_text", input.heroText],
         ["hero_image", hero || DEFAULTS.hero_image],
